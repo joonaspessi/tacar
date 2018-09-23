@@ -1,10 +1,16 @@
 import ctypes
 import time
-from sdl2 import *
+from sdl2 import SDL_JOYDEVICEADDED, SDL_JOYAXISMOTION, SDL_JoystickOpen, SDL_Init, SDL_INIT_JOYSTICK, SDL_Event, SDL_PollEvent, SDL_JOYBUTTONDOWN, SDL_JOYBUTTONUP
 
 THROTTLE_AXIS = 5
 BRAKE_AXIS = 2
 STEER_AXIS = 0
+
+def translate(value, leftMin, leftMax, rightMin, rightMax):
+    leftSpan = leftMax - leftMin
+    rightSpan = rightMax - rightMin
+    valueScaled = float(value - leftMin) / float(leftSpan)
+    return rightMin + (valueScaled * rightSpan)
 
 class Joystick:
     def __init__(self):
@@ -29,17 +35,20 @@ class Joystick:
         return self.axis[axis]
 
     def getSteering(self):
-        return self.getAxis(STEER_AXIS)
+        return self.normalize(self.getAxis(STEER_AXIS), -1, 1)
 
     def getThrottle(self):
-        return self.getAxis(THROTTLE_AXIS)
+        return self.normalize(self.getAxis(THROTTLE_AXIS),0, 1)
 
     def getBrake(self):
         return self.getAxis(BRAKE_AXIS)
+
+    def normalize(self, value, min, max):
+        return translate(value, -32768, 32767, min, max)
         
 if __name__ == "__main__":
     joystick = Joystick()
     while True:
         joystick.update()
         time.sleep(0.5)
-        print(joystick.axis)
+        print(joystick.getSteering(), joystick.getThrottle())
