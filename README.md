@@ -1,4 +1,4 @@
-# TA CAR
+# TA CAR Data logger - Generic training data logger
 ![screenshot](https://github.com/joonaspessi/tacar/blob/master/resources/screenshot.PNG)
 
 Utility software for capturing training data for `TÄ Solutions self driving car`
